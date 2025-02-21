@@ -10,6 +10,18 @@ font = pygame.font.Font(None, 32)
 background = pygame.Surface(screen.get_size())
 background.fill((30, 30, 30))
 
+image_o_p = "data/lab.png"
+image_o_r = pygame.image.load(image_o_p)
+
+image_left_p = "data/lab_left.png"
+image_left = pygame.image.load(image_left_p)
+
+image_port_p = "data/lab_port.png"
+image_port = pygame.image.load(image_port_p)
+
+image_rush_p = "data/lab_rush.png"
+image_rush = pygame.image.load(image_rush_p)
+
 
 def draw_text(text, position):
     text_surface = font.render(text, True, (255, 255, 255))
@@ -62,6 +74,7 @@ def start_game():
     ]
     while True:
         screen.blit(background, (0, 0))
+        screen.blit(image_o_r, (400, 400))
         draw_text("Здравствуйте, дорогой первопроходец", (50, 50))
         draw_text("Ты находишься в лабиринте, найди истинный путь,", (50, 100))
         draw_text("чтобы 'сбежать' отсюда. Выберите одну из дверей:", (50, 150))
@@ -83,20 +96,22 @@ def first_choice(choice):
     if choice == "Налевво":
         draw_text("Вы решили пойти в левую дверь, вы увидели еще одну развилку.", (50, 50))
         draw_text("Куда пойдете? (Направо, Налевво)", (50, 100))
+        screen.blit(image_left, (400, 400))
         buttons = [
             Button("Направо", (50, 200), lambda: left_choice("Направо")),
             Button("Налевво", (50, 260), lambda: left_choice("Налевво")),
         ]
     elif choice == "Прямо":
         draw_text("Вы решились зайти в дверь по середине.", (50, 50))
-        draw_text("Была развилка направо или налево.", (50, 100))
+        draw_text("Была только дверь налево.", (50, 100))
+        screen.blit(image_rush, (400, 400))
         buttons = [
-            Button("Направо", (50, 200), lambda: straight_choice("Направо")),
             Button("Налевво", (50, 260), lambda: straight_choice("Налевво")),
         ]
     elif choice == "Направо":
         draw_text("Зайдя в правую дверь, вы видите 3 портала.", (50, 50))
         draw_text("Так в какой пойти? (1, 2, 3)", (50, 100))
+        screen.blit(image_port,(400, 400))
         buttons = [
             Button("Портал 1", (50, 200), lambda: right_choice("1")),
             Button("Портал 2", (50, 260), lambda: right_choice("2")),
@@ -120,13 +135,15 @@ def first_choice(choice):
 
 def left_choice(choice):
     screen.blit(background, (0, 0))
+    screen.blit(image_left, (400, 400))
     if choice == "Направо":
         draw_text("Войдя в правую дверь, вы оказываетесь в комнате,", (50, 50))
         draw_text("где вас никто не видел.", (50, 100))
-        game_over()
+        buttons = [Button("Начать заново", (50, 200), start_game)]
     elif choice == "Налевво":
-        draw_text("Вы решаете пойти в левую дверь и находите выход.", (50, 50))
-        draw_text("Поздравляем, вы выбрались!", (50, 100))
+        draw_text("Вы решаете пойти в левую дверь и клачок бумаги.", (50, 50))
+        draw_text("На нём говориться про какое-то 3 и сон", (50, 100))
+        draw_text("Чтобы это значило?А потом осознаёте что двери нет в этой комнате....", (50, 150))
         buttons = [Button("Начать заново", (50, 200), start_game)]
 
     while True:
@@ -145,13 +162,10 @@ def left_choice(choice):
 
 def straight_choice(choice):
     screen.blit(background, (0, 0))
-    if choice == "Направо":
-        draw_text("Вы заходите и видите старика...", (50, 50))
-        draw_text("Старик говорит: 'Лево...лево.'", (50, 100))
-        game_over()
-    elif choice == "Налевво":
-        draw_text("Вы решили пойти налево и нашли выход.", (50, 50))
-        draw_text("Поздравляем, вы выбрались!", (50, 100))
+    screen.blit(image_rush, (400, 400))
+    if choice == "Налевво":
+        draw_text("Вы решили пойти налево и нашли огромный тунель.", (50, 50))
+        draw_text("Вы решаете пойти в него и счастье вы вышли!", (50, 100))
         buttons = [Button("Начать заново", (50, 200), start_game)]
 
     while True:
@@ -172,18 +186,21 @@ def right_choice(portal):
     screen.blit(background, (0, 0))
     if portal == "1":
         draw_text("Вы выходите к деревне.", (50, 50))
-        draw_text("Поздравляем, вы выбрались!", (50, 100))
-        game_over()
+        draw_text("И решаете остаться в ней и забыть обо всём", (50, 100))
+        buttons = [Button("Начать заново", (50, 200), start_game)]
     elif portal == "2":
-        draw_text("Вы попали на поле битвы и проиграли.", (50, 50))
-        game_over()
+        draw_text("Вы попали на поле битвы и вас убивают...", (50, 50))
+        buttons = [Button("Начать заново", (50, 200), start_game)]
     elif portal == "3":
         draw_text("Это был всего лишь сон. Вы просыпаетесь!", (50, 50))
         draw_text("Что очень вас удивляет ,что это просто сон", (50, 100))
         draw_text("Вы решили сделать кофе ведь ещё нужно ", (50, 150))
         draw_text("закончить проект который вы не доделали", (50, 200))
         draw_text("И да прибудут с вами боги .--- .- ...- .-!", (50, 250))
-        buttons = [Button("Начать заново", (50, 300), start_game)]
+        buttons = [
+            Button("Начать заново", (50, 300), start_game),
+            Button("Закрыть игру", (50, 370), pygame.quit)
+        ]
 
     while True:
         for button in buttons:
